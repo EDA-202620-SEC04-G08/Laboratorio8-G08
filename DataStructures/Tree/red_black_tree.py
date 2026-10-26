@@ -19,7 +19,6 @@ def rotate_left(node_rbt):
     node_rbt["size"] = 1 + size_tree(node_rbt["left"]) + size_tree(node_rbt["right"])
     return x
 
-
 def rotate_right(node_rbt):
     x = node_rbt["left"]
     node_rbt["left"] = x["right"]
@@ -32,7 +31,10 @@ def rotate_right(node_rbt):
 
 def flip_node_color(node):
     if node is not None:
-        rn.change_color(node, rn.BLACK if is_red(node) else rn.RED)
+        if rn.is_red(node):
+            rn.change_color(node,rn.BLACK)
+        else:
+            rn.change_color(node, rn.RED)
     return node
 
 def flip_colors(node_rbt):
@@ -42,11 +44,16 @@ def flip_colors(node_rbt):
     return node_rbt
 
 def size_tree(root):
-    return 0 if root is None else root["size"]
+    valor = 0
+    if root is not None:
+        valor = root["size"]
+    return valor
 
 def is_red(node):
-    return rn.is_red(node) 
-
+    valor = False
+    if node is not None:
+        valor = rn.is_red(node) 
+    return valor
 
 def insert_node(root, key, value):
     if root is None:
