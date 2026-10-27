@@ -107,3 +107,29 @@ def contains(my_rbt, key):
     if valor is not None:
         verdadero = True
     return verdadero
+
+def size(my_rbt):
+    tamano = 0
+    if my_rbt is not None:
+        tamano = size_tree(my_rbt["root"])
+    return tamano
+
+def is_empty(my_rbt):
+    tamno = size(my_rbt)
+    valor = False
+    if tamno == 0:
+        valor = True
+    return valor
+
+def key_set_tree(root,key_list):
+    if root is not None:
+        key_set_tree(root["left"],key_list)
+        sl.add_last(key_list, rn.get_key(root))
+        key_set_tree(root["right"],key_list)
+    return key_list
+
+def key_set(my_rbt):
+    llaves = sl.new_list
+    if my_rbt is not None:
+        key_set_tree(my_rbt["root"],llaves)
+    return llaves
