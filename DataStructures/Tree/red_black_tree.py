@@ -133,7 +133,7 @@ def key_set_tree(root,key_list):
     return key_list
 
 def key_set(my_rbt):
-    llaves = sl.new_list
+    llaves = sl.new_list()
     if my_rbt is not None:
         key_set_tree(my_rbt["root"],llaves)
     return llaves
