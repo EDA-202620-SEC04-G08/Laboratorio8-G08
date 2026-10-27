@@ -27,12 +27,15 @@
 import os
 import csv
 import datetime
+import DataStructures.Tree.red_black_tree as rbt
+import DataStructures.List.single_linked_list as sl
+import DataStructures.List.array_list as al
 
 # TODO Realice la importación del Árbol Rojo Negro
 # TODO Realice la importación de ArrayList (al) o SingleLinked (sl) como estructura de datos auxiliar para sus requerimientos
 # TODO Realice la importación de LinearProbing (lp) o Separate Chaining (sp) como estructura de datos auxiliar para sus requerimientos
 
-data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
+data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data'
 
 
 
@@ -227,8 +230,7 @@ def max_key_areas(analyzer):
     """
     Llave mas grande por areas
     """
-    # TODO Retornar la llave más grande del árbol por áreas
-    pass
+    return rbt.get_max(analyzer["areas_index"])
 
 def get_crimes_by_range_area(analyzer, initialArea, finalArea):
     """
@@ -236,8 +238,13 @@ def get_crimes_by_range_area(analyzer, initialArea, finalArea):
     """
     # TODO Completar la consulta de crimenes por rango de areas
     totalcrimes = 0
-    return totalcrimes
+    lists_in_range = rbt.values(analyzer["areas_index"], initialArea, finalArea)
 
+    tot = 0
+    for i in range(al.size(lists_in_range)):
+        crimes_of_area = al.get_element(lists_in_range, i)
+        tot += al.size(crimes_of_area)
+    return tot
 def get_crimes_by_range(analyzer, initialDate, finalDate):
     """
     Retorna el numero de crimenes en un rago de fechas.
