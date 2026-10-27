@@ -133,3 +133,16 @@ def key_set(my_rbt):
     if my_rbt is not None:
         key_set_tree(my_rbt["root"],llaves)
     return llaves
+
+def value_set_tree(root,value_list):
+    if root is not None:
+        value_set_tree(root["left"],value_list)
+        sl.add_last(value_list,rn.get_value(root))
+        value_set_tree(root["right"],value_list)
+    return value_list
+
+def value_set(my_rbt):
+    valores = sl.new_list()
+    if my_rbt is not None:
+        value_set_tree(my_rbt["root"],valores)
+    return valores
