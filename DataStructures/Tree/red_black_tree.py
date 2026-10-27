@@ -1,5 +1,5 @@
 from DataStructures.Tree import rbt_node as rn
-
+from DataStructures.List import single_linked_list as sl
 
 def default_compare(key, element):
     k = rn.get_key(element)
@@ -81,3 +81,29 @@ def put(my_rbt, key, value):
     my_rbt["root"] = insert_node(my_rbt["root"], key, value)
     rn.change_color(my_rbt["root"], rn.BLACK)
     return my_rbt
+
+def get_node(root,key):
+    valor = None
+    if root is not None:
+        comparacion = default_compare(key,root)
+        if comparacion < 0:
+            valor = get_node(root["left"],key)
+        elif comparacion >0:
+            valor = get_node(root["right"],key)
+        else:
+            valor= rn.get_value(root)
+    return valor
+
+def get(my_rbt, key):
+    if my_rbt is None or my_rbt["root"] is None:
+        valor = None
+    else:
+        valor = get_node(my_rbt["root"],key)
+    return valor
+
+def contains(my_rbt, key):
+    valor = get(my_rbt,key)
+    verdadero = False
+    if valor is not None:
+        verdadero = True
+    return verdadero
