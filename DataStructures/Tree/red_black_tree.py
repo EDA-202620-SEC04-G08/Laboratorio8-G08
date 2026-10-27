@@ -1,6 +1,10 @@
 from DataStructures.Tree import rbt_node as rn
 from DataStructures.List import single_linked_list as sl
 
+def new_map():
+    arbol = {"root": None}
+    return arbol
+
 def default_compare(key, element):
     k = rn.get_key(element)
     if key == k:

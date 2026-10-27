@@ -28,9 +28,11 @@ import os
 import csv
 import datetime
 
-# TODO Realice la importación del Árbol Rojo Negro
-# TODO Realice la importación de ArrayList (al) o SingleLinked (sl) como estructura de datos auxiliar para sus requerimientos
-# TODO Realice la importación de LinearProbing (lp) o Separate Chaining (sp) como estructura de datos auxiliar para sus requerimientos
+from DataStructures.Tree import red_black_tree as rbt
+from DataStructures.List import array_list as al
+from DataStructures.List import single_linked_list as sl
+from DataStructures.Map import map_linear_probing as lp
+
 
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
 
@@ -52,7 +54,7 @@ def new_logic():
 
     analyzer["crimes"] = al.new_list()
     analyzer["dateIndex"] = rbt.new_map()
-    # TODO Crear el índice ordenado por áreas reportadas
+    analyzer["areaIndex"] = rbt.new_map()
     return analyzer
 
 # Funciones para realizar la carga
@@ -80,7 +82,9 @@ def add_crime(analyzer, crime):
     al.add_last(analyzer['crimes'], crime)
     update_date_index(analyzer['dateIndex'], crime)
     # TODO Actualizar el indice por areas reportadas
-
+    al.add_last(analyzer["crime"],crime)
+    update_date_index(analyzer["dateIndex"],crime)
+    update_area_index(analyzer["areaIndex"],crime)
     return analyzer
 
 def update_area_index(map, crime):
@@ -91,6 +95,19 @@ def update_area_index(map, crime):
     y si el area son ["", " ", None] se utiliza el valor por defecto 9999
     """
     # TODO Implementar actualizacion del indice por areas reportadas
+    area = crime["REPORTING_AREA"]
+    if area is None:
+        area = 999
+    elif str(area).strip() == "":
+        area = 999
+    elif str(area).strip() = " ":
+        area = 999
+        
+    crimenes_area = rbt.get(map,area)
+    if crimenes_area is None:
+        crimenes_area = al.new_list()
+        rbt.put(map,area,crimenes_area)
+    al.add_last(crimenes_area, crime)
     return map
 
 
