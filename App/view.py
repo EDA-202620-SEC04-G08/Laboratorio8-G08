@@ -60,6 +60,7 @@ def print_menu():
     print("3- Consultar crimenes en un rango de fechas")
     print("4- Consultar crimenes por codigo y fecha")
     #TODO Agregar opción 5 en el menú, consultar por REPORTING_AREA
+    print("5- Consultar crimenes por área reportada")
     print("0- Salir")
     print("*******************************************")
 
