@@ -150,3 +150,240 @@ def value_set(my_rbt):
     if my_rbt is not None:
         value_set_tree(my_rbt["root"],valores)
     return valores
+
+# A partir de acá, las implementaciones fueron hechas por Juan José Peñaloza con ayuda de Claude Sonnet 5.5
+
+def get_min_node(root):
+    valor = None
+    if root is not None:
+        if root["left"] is None:
+            valor = rn.get_key(root)
+        else:
+            valor = get_min_node(root["left"])
+    return valor
+
+def get_min(my_rbt):
+    llave = None
+    if my_rbt is not None:
+        llave = get_min_node(my_rbt["root"])
+    return llave
+
+def get_max_node(root):
+    valor = None
+    if root is not None:
+        if root["right"] is None:
+            valor = rn.get_key(root)
+        else:
+            valor = get_max_node(root["right"])
+    return valor
+
+def get_max(my_rbt):
+    llave = None
+    if my_rbt is not None:
+        llave = get_max_node(my_rbt["root"])
+    return llave
+
+# ---------- Balanceo y eliminación ----------
+
+def balance(root):
+    if is_red(root["right"]) and not is_red(root["left"]):
+        root = rotate_left(root)
+    if is_red(root["left"]) and is_red(root["left"]["left"]):
+        root = rotate_right(root)
+    if is_red(root["left"]) and is_red(root["right"]):
+        flip_colors(root)
+    root["size"] = 1 + size_tree(root["left"]) + size_tree(root["right"])
+    return root
+
+def move_red_left(root):
+    flip_colors(root)
+    if is_red(root["right"]["left"]):
+        root["right"] = rotate_right(root["right"])
+        root = rotate_left(root)
+        flip_colors(root)
+    return root
+
+def move_red_right(root):
+    flip_colors(root)
+    if is_red(root["left"]["left"]):
+        root = rotate_right(root)
+        flip_colors(root)
+    return root
+
+def delete_min_node(root):
+    if root["left"] is None:
+        return None
+    if not is_red(root["left"]) and not is_red(root["left"]["left"]):
+        root = move_red_left(root)
+    root["left"] = delete_min_node(root["left"])
+    return balance(root)
+
+def delete_min(my_rbt):
+    if my_rbt is not None and my_rbt["root"] is not None:
+        raiz = my_rbt["root"]
+        if not is_red(raiz["left"]) and not is_red(raiz["right"]):
+            rn.change_color(raiz, rn.RED)
+        my_rbt["root"] = delete_min_node(raiz)
+        if my_rbt["root"] is not None:
+            rn.change_color(my_rbt["root"], rn.BLACK)
+    return my_rbt
+
+def delete_max_node(root):
+    if is_red(root["left"]):
+        root = rotate_right(root)
+    if root["right"] is None:
+        return None
+    if not is_red(root["right"]) and not is_red(root["right"]["left"]):
+        root = move_red_right(root)
+    root["right"] = delete_max_node(root["right"])
+    return balance(root)
+
+def delete_max(my_rbt):
+    if my_rbt is not None and my_rbt["root"] is not None:
+        raiz = my_rbt["root"]
+        if not is_red(raiz["left"]) and not is_red(raiz["right"]):
+            rn.change_color(raiz, rn.RED)
+        my_rbt["root"] = delete_max_node(raiz)
+        if my_rbt["root"] is not None:
+            rn.change_color(my_rbt["root"], rn.BLACK)
+    return my_rbt
+
+
+# ---------- Floor y ceiling ----------
+
+def floor_key(root, key):
+    valor = None
+    if root is not None:
+        comparacion = default_compare(key, root)
+        if comparacion == 0:
+            valor = rn.get_key(root)
+        elif comparacion < 0:
+            valor = floor_key(root["left"], key)
+        else:
+            candidato = floor_key(root["right"], key)
+            if candidato is not None:
+                valor = candidato
+            else:
+                valor = rn.get_key(root)
+    return valor
+
+def floor(my_rbt, key):
+    valor = None
+    if my_rbt is not None:
+        valor = floor_key(my_rbt["root"], key)
+    return valor
+
+def ceiling_key(root, key):
+    valor = None
+    if root is not None:
+        comparacion = default_compare(key, root)
+        if comparacion == 0:
+            valor = rn.get_key(root)
+        elif comparacion > 0:
+            valor = ceiling_key(root["right"], key)
+        else:
+            candidato = ceiling_key(root["left"], key)
+            if candidato is not None:
+                valor = candidato
+            else:
+                valor = rn.get_key(root)
+    return valor
+
+def ceiling(my_rbt, key):
+    valor = None
+    if my_rbt is not None:
+        valor = ceiling_key(my_rbt["root"], key)
+    return valor
+
+
+# ---------- Select y rank (posición base 0) ----------
+
+def select_key(root, pos):
+    valor = None
+    if root is not None:
+        izq = size_tree(root["left"])
+        if izq > pos:
+            valor = select_key(root["left"], pos)
+        elif izq < pos:
+            valor = select_key(root["right"], pos - izq - 1)
+        else:
+            valor = rn.get_key(root)
+    return valor
+
+def select(my_rbt, pos):
+    valor = None
+    if my_rbt is not None and 0 <= pos < size(my_rbt):
+        valor = select_key(my_rbt["root"], pos)
+    return valor
+
+def rank_keys(root, key):
+    cantidad = 0
+    if root is not None:
+        comparacion = default_compare(key, root)
+        if comparacion < 0:
+            cantidad = rank_keys(root["left"], key)
+        elif comparacion > 0:
+            cantidad = 1 + size_tree(root["left"]) + rank_keys(root["right"], key)
+        else:
+            cantidad = size_tree(root["left"])
+    return cantidad
+
+def rank(my_rbt, key):
+    cantidad = 0
+    if my_rbt is not None:
+        cantidad = rank_keys(my_rbt["root"], key)
+    return cantidad
+
+
+# ---------- Altura ----------
+
+def height_tree(root):
+    altura = 0
+    if root is not None:
+        altura = 1 + max(height_tree(root["left"]), height_tree(root["right"]))
+    return altura
+
+def height(my_rbt):
+    altura = 0
+    if my_rbt is not None:
+        altura = height_tree(my_rbt["root"])
+    return altura
+
+
+# ---------- Rangos ----------
+
+def keys_range(root, key_initial, key_final, list_key):
+    if root is not None:
+        cmp_lo = default_compare(key_initial, root)
+        cmp_hi = default_compare(key_final, root)
+        if cmp_lo < 0:
+            keys_range(root["left"], key_initial, key_final, list_key)
+        if cmp_lo <= 0 and cmp_hi >= 0:
+            sl.add_last(list_key, rn.get_key(root))
+        if cmp_hi > 0:
+            keys_range(root["right"], key_initial, key_final, list_key)
+    return list_key
+
+def keys(my_rbt, key_initial, key_final):
+    lista = sl.new_list()
+    if my_rbt is not None:
+        keys_range(my_rbt["root"], key_initial, key_final, lista)
+    return lista
+
+def values_range(root, key_initial, key_final, list_values):
+    if root is not None:
+        cmp_lo = default_compare(key_initial, root)
+        cmp_hi = default_compare(key_final, root)
+        if cmp_lo < 0:
+            values_range(root["left"], key_initial, key_final, list_values)
+        if cmp_lo <= 0 and cmp_hi >= 0:
+            sl.add_last(list_values, rn.get_value(root))
+        if cmp_hi > 0:
+            values_range(root["right"], key_initial, key_final, list_values)
+    return list_values
+
+def values(my_rbt, key_initial, key_final):
+    lista = sl.new_list()
+    if my_rbt is not None:
+        values_range(my_rbt["root"], key_initial, key_final, lista)
+    return lista
