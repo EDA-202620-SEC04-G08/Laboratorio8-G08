@@ -223,31 +223,28 @@ def index_height_areas(analyzer):
     """
     Altura del arbol por areas
     """
-    # TODO Retornar la altura del árbol por areas
-    pass
+    return rbt.height(analyzer["areaIndex"])
 
 
 def index_size_areas(analyzer):
     """
     Numero de elementos en el indice por areas
     """
-    # TODO Retornar el numero de elementos en el árbol por areas
-    pass
+    return rbt.size(analyzer["areaIndex"])
 
 
 def min_key_areas(analyzer):
     """
     Llave mas pequena por areas
     """
-    # TODO Retornar la llave más pequeña del árbol por áreas
-    pass
+    return rbt.get_min(analyzer["areaIndex"])
 
 
 def max_key_areas(analyzer):
     """
     Llave mas grande por areas
     """
-    return rbt.get_max(analyzer["areas_index"])
+    return rbt.get_max(analyzer["areaIndex"])
 
 def get_crimes_by_range_area(analyzer, initialArea, finalArea):
     """
